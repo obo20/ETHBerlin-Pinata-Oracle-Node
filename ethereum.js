@@ -47,6 +47,7 @@ async function watchContract(address) {
       .on('data', event => {
         const hash = getHashFromEvent(event, eventDef);
         console.log('adding hash', hash);
+        db.addHash(address, hash);
         ipfs.pin.add(hash);
       });
   });
