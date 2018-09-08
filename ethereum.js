@@ -2,6 +2,7 @@ const contract = require('truffle-contract');
 const Web3 = require('web3');
 const ipfs = require('./ipfs');
 const db = require('./database');
+const Web3Abi = require('web3-eth-abi');
 
 const pinataBuild = require('../smart-contracts/build/contracts/PinataHub.json');
 const Pinata = contract(pinataBuild);
@@ -15,10 +16,18 @@ const all = Promise.all.bind(Promise);
 const MY_ADDRESS = '0x0000000000000000000000000000000000000000';
 
 function getSignature(event) {
-  return web3.utils.sha3(`${event.name}(${event.dataTypes.join(',')})`);
+  return web3.utils.sha3(`${event.name}(${event.params.map(param => param.type).join(',')})`);
 }
-function getHashFromEvent(event) {
-  return event;
+function getHashFromEvent(event, eventDef) {
+  const log = Web3Abi.decodeLog(eventDef.params, event.data.replace('0x', ''), event.topics);
+
+  for (var i = 0; i < eventDef.params.length; i++) {
+    const definition = eventDef.params[i];
+    if (definition.selected) {
+      return log[definition.name];
+    }
+  }
+  throw Error('Hash not found', log);
 }
 
 async function watchContract(address) {
@@ -29,6 +38,7 @@ async function watchContract(address) {
 
   config.events.forEach(eventDef => {
     const signature = getSignature(eventDef);
+    console.log(signature);
 
     web3.eth.subscribe('logs', {
       address: address,

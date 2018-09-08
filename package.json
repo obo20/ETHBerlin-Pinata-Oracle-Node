@@ -13,6 +13,7 @@
     "koa": "^2.5.2",
     "koa-router": "^7.4.0",
     "truffle-contract": "^4.0.0-next.0",
-    "web3": "^1.0.0-beta.36"
+    "web3": "^1.0.0-beta.36",
+    "web3-eth-abi": "^1.0.0-beta.36"
   }
 }
