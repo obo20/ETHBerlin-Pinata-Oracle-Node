@@ -31,6 +31,7 @@ function getHashFromEvent(event, eventDef) {
 }
 
 async function watchContract(address) {
+  console.log('Starting watcher for contract', address);
   const contract = db.getContract(address);
   const config = await ipfs.getConfig(contract.configHash);
 
@@ -55,6 +56,12 @@ async function watchContract(address) {
 
 (async function() {
   const pinata = await Pinata.deployed();
+
+  db.getContracts().forEach(({ address, configHash }) => {
+    if (configHash) {
+      watchContract(address);
+    }
+  });
 
   pinata.ContractAddedClient({
     filter: {
