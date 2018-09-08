@@ -30,5 +30,11 @@ const all = Promise.all.bind(Promise);
       console.log('adding hash', hash);
       ipfs.pin.add(hash);
     }
+
+    customer.HashAdded().on('data', (data) => {
+      const hash = web3.utils.toUtf8(data.returnValues.hash);
+      console.log('adding hash', hash);
+      ipfs.pin.add(hash);
+    });
   }));
 })();
