@@ -1,5 +1,6 @@
 const Koa = require('koa');
 const router = require('./router');
+require('./ethereum');
 
 const app = new Koa();
 
