@@ -1,7 +1,5 @@
-const ipfsAPI = require('ipfs-api');
 const Koa = require('koa');
-
-const ipfs = ipfsAPI({host: 'localhost', port: '5001', protocol: 'http'});
+const router = require('./router');
 
 const app = new Koa();
 
@@ -15,12 +13,8 @@ app.use(async (ctx, next) => {
   }
 });
 
-app.use(async ctx => {
-  const { id } = await ipfs.id();
-  console.log(id);
-
-  ctx.body = `Connected to IPFS node ${id}`;
-});
-
+app.use(router.routes());
+// makes sure a 405 Method Not Allowed is sent
+app.use(router.allowedMethods());
 
 app.listen(3000);
