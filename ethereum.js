@@ -4,16 +4,16 @@ const ipfs = require('./ipfs');
 const db = require('./database');
 const Web3Abi = require('web3-eth-abi');
 
-const pinataBuild = require('../smart-contracts/build/contracts/PinataHub.json');
+const pinataBuild = require('./PinataHub.json');
 const Pinata = contract(pinataBuild);
 
-const provider = new Web3.providers.WebsocketProvider('ws://localhost:8546');
+const provider = new Web3.providers.WebsocketProvider(process.env.WS_PROVIDER || 'ws://localhost:8546');
 Pinata.setProvider(provider);
 const web3 = new Web3(provider);
 
 const all = Promise.all.bind(Promise);
 
-const MY_ADDRESS = '0x0000000000000000000000000000000000000000';
+const MY_ADDRESS = '0x0000000000000000000000000000000000001337';
 
 function getSignature(event) {
   return web3.utils.sha3(`${event.name}(${event.params.map(param => param.type).join(',')})`);

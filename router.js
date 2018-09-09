@@ -1,5 +1,6 @@
 const Router = require('koa-router');
 const ipfs = require('./ipfs');
+const db = require('./database');
 
 const router = new Router();
 
@@ -26,5 +27,13 @@ router.delete('/pin/:hash', async (ctx) => {
 
   ctx.body = files;
 });
+
+router.get('/contract/:address', async (ctx) => {
+  const contract = db.getContract(ctx.params.address);
+  ctx.body = {
+    contract,
+    events: contract && contract.configHash ? await ipfs.getConfig(contract.configHash) : null,
+  };
+})
 
 module.exports = router;

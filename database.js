@@ -46,7 +46,8 @@ module.exports.setConfigHash = function setConfigHash(address, configHash) {
 
 module.exports.addHash = function addHash(address, hash) {
   const contract = getContract(address);
-  contract.hashes.push(hash);
+  if (contract.hashes.indexOf(hash) == -1) {
+    contract.hashes.push(hash);
+  }
   writeDB();
 }
-
